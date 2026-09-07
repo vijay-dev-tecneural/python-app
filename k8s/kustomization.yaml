@@ -1,0 +1,10 @@
+# Optional: kubectl apply -k k8s/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: reactapp
+resources:
+  - namespace.yaml
+  - postgres.yaml
+  - backend.yaml
+  - frontend.yaml
+  - ingress.yaml

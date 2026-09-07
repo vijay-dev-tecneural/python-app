@@ -1,0 +1,44 @@
+# Optional single entrypoint (cluster Ingress controller required).
+# Traffic: Internet/client → Ingress → Service/frontend → nginx → /api → Service/backend
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reactapp
+  namespace: reactapp
+  labels:
+    app: reactapp
+  annotations:
+    # Examples (uncomment what matches your controller):
+    # nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    # kubernetes.io/ingress.class: nginx   # older clusters
+spec:
+  # ingressClassName: nginx   # set to your controller (nginx, traefik, etc.)
+  rules:
+    - host: reactapp.local   # change to your host / add /etc/hosts for local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+---
+# Optional: expose frontend directly without Ingress (minikube/kind demo).
+# Apply this instead of (or in addition to) Ingress if you prefer NodePort.
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: frontend-nodeport
+#   namespace: reactapp
+# spec:
+#   type: NodePort
+#   selector:
+#     app: frontend
+#   ports:
+#     - name: http
+#       port: 80
+#       targetPort: 8080
+#       nodePort: 30080
